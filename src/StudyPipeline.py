@@ -11,32 +11,52 @@ class StudyPipeline:
     def __init__(
         self,
         sourcepath: str,
-        studyDefinition: dict,
         exportDestination: str,
         batchsize: int,
         **kwargs,
     ):
+        if not os.path.isdir(sourcepath):
+            raise ValueError(f"{sourcepath} is not a valid source directory")
+
+        if not os.path.isdir(exportDestination):
+            raise ValueError(f"{exportDestination} is not a valid export directory")
+
         self.sourcepath = sourcepath
-        self.studyDefinition = studyDefinition
+        # self.studyDefinition = studyDefinition
         self.exportDestination = exportDestination
         self.namingConvention = NamingConventionBase(**kwargs)
         self.batch = batchsize
-
+        self.imProcessed = 0
+        self.studiesProccessed = 0
         self.pipelineData = []
         self.images = {}
 
     def ETL(self, *args, **kwargs):
-        #
-
         for batch in self._walk_dirs(self.batch):
             try:
                 studyimages = self.extract(batch)
                 updatedImages = self.transform(studyimages)
                 self.load(updatedImages)
-                logging.info(f"Proccessed {self.batch} images")
+                logging.info(f"Proccessed {len(list(batch))} images")
             except Exception as e:
                 logging.debug(traceback.format_exc())
                 logging.warning(e)
+
+        self._cleanUp()
+
+    def _cleanUp(self):
+        logging.info(f"------FINISHED CLEANUP-------")
+        logging.info(f"Images Proccessed: {self.imProcessed}")
+        logging.info(f"Unique Studies Extracted: {self.studiesProccessed}")
+
+        logging.info("Site Variations: ")
+        print(self.namingConvention.sites)
+        logging.info("Subject Variations: ")
+        print(self.namingConvention.subjects)
+        logging.info("Timepoint Variations: ")
+        print(self.namingConvention.timepoints)
+        logging.info("StudyName Variations: ")
+        print(self.namingConvention.studynames)
 
     def __write_files_timepoint(self, imageInstance):
         """
@@ -49,6 +69,7 @@ class StudyPipeline:
 
         if not os.path.isdir(studyPath):
             os.mkdir(studyPath)
+            self.studiesProccessed += 1
 
         if "timepoint" in imageInstance.studyInfo:
             timepoint = imageInstance.studyInfo["timepoint"]
@@ -58,8 +79,11 @@ class StudyPipeline:
             if not os.path.isdir(studyPath):
                 os.mkdir(studyPath)
 
-        name = f"{imageInstance.instanceUID}.dcm"
+        nFiles = len(os.listdir(studyPath))
+
+        name = f"{nFiles + 1}.dcm"
         studyPath = os.path.join(studyPath, name)
+
         imageInstance.dataset.save_as(studyPath)
 
     def _walk_dirs(self, batch_size):
@@ -94,3 +118,4 @@ class StudyPipeline:
     def load(self, items: list):
         for ithImage in items:
             self.__write_files_timepoint(ithImage)
+            self.imProcessed += 1

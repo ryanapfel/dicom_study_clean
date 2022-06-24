@@ -24,19 +24,20 @@ class StudyImage:
         self.retrieve()
 
     def retrieve(self):
-        self.dataset = dcmread(self.filepath)
 
-        self.seriesUID = self.get("SeriesInstanceUID")
-        self.studyUID = self.get("StudyInstanceUID")
-        self.instanceUID = self.get("SOPInstanceUID")
+        self.dataset = dcmread(self.filepath, force=True)
+
+        # self.seriesUID = self.get("SeriesInstanceUID")
+        # self.studyUID = self.get("StudyInstanceUID")
+        # self.instanceUID = self.get("SOPInstanceUID")
         self.modality = self.get("Modality")
-        self.date = self.getDateTime()
+        # self.date = self.getDateTime()
 
         self.name = self.get("PatientName")
         self.studyInfo = self.nameConvention.extract(self.name)
 
     def __repr__(self):
-        return f"{self.study}-{self.siteId}_{self.subjectId}-{self.timepoint} : {self.date}"
+        return f"{self.study}-{self.siteId}_{self.subjectId}-{self.timepoint}"
 
     def writeMeta(self, key, value):
         try:
@@ -84,7 +85,7 @@ class StudyImage:
         elif date:
             return date
         else:
-            raise ValueError("Uh oh dont be here")
+            raise ValueError("Not able to extact date and time")
 
     def get(self, key):
         if key not in self.dataset:
