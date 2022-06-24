@@ -61,8 +61,7 @@ Extract will go through each study folder and output a small JSON file containin
 ```
 studyclean extract -i <path_to_cleaned>
 ```
-Output of each study will look like:
-**Study-010-02-Timepoint**
+
 
 
 ##### 3. archive
