@@ -31,7 +31,7 @@ class RecordStudyDataPipeline:
                     logging.debug(traceback.format_exc())
         self.cleanUp()
 
-    def cleanUp(self, filename: str = "allStudies.json"):
+    def cleanUp(self, filename: str = "study.json"):
         path = os.path.join(self.input_dir, filename)
         with open(path, "w") as fp:
             json.dump(self.allStudies, fp, indent=4)

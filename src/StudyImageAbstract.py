@@ -1,6 +1,5 @@
 from src.NamingConvention import NamingConventionBase
 from datetime import timedelta
-import pandas as pd
 
 
 class StudyImageAbstract:

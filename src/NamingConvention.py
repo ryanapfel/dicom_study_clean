@@ -1,4 +1,3 @@
-import imp
 import re
 
 
@@ -82,7 +81,6 @@ class NamingConventionBase:
             self.sites.add(site_str)
             self.subjects.add(subject_str)
             self.timepoints.add(timepoint_str)
-
 
         return f"{study}{self.studySplit}{site_str}{self.siteSplit}{subject_str}{self.timepointSplit}{timepoint_str}"
 

@@ -1,3 +1,4 @@
+from email.policy import default
 import pandas as pd
 from datetime import datetime
 import os
@@ -7,6 +8,7 @@ import logging
 from src.StudyPipeline import StudyPipeline
 from src.RecordStudyInfo import RecordStudyDataPipeline
 from src.Archive import archvieDirectorySubFolders
+from src.InsertOutput import InsertOutput
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -108,6 +110,29 @@ def extract(input_path):
 )
 def archive(input_path, output_path):
     archvieDirectorySubFolders(input_path, output_path)
+
+
+@cli.command()
+@click.option(
+    "-i",
+    "--input_path",
+    help="Path to directory that contains all of the cleaned directories",
+    required=True,
+)
+@click.option(
+    "-e",
+    "--excel_path",
+    help="Path to excel file containing the output to insert",
+    required=True,
+)
+@click.option(
+    "--col",
+    help="Column in scpreadsheet that contains the subject ID. format in spreadsheet must match format in directory folder",
+    default="Subject ID",
+)
+def addOutput(input_path, excel_path, col):
+    IO = InsertOutput(excel_path, input_directory=input_path, identifier_column=col)
+    IO.run()
 
 
 if __name__ == "__main__":

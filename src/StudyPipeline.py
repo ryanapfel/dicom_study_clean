@@ -1,4 +1,3 @@
-import imp
 from src.NamingConvention import NamingConventionBase
 from src.StudyImage import StudyImage
 import logging
