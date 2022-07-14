@@ -1,6 +1,8 @@
 # Study Cleaner
 Use this script to clean DICOM studies using NIRC naming convention 
-
+```
+poetry publish --build --username $PYPI_USERNAME --password $PYPI_PASSWORD
+```
 ## Setup
 ##### 1. Environment
 go to python current working directory

@@ -1,4 +1,4 @@
-from src.NamingConvention import NamingConventionBase
+from dcmstudyclean.NamingConvention import NamingConventionBase
 from datetime import timedelta
 
 

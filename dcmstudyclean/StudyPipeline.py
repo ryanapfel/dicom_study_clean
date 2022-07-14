@@ -1,5 +1,5 @@
-from src.NamingConvention import NamingConventionBase
-from src.StudyImage import StudyImage
+from dcmstudyclean.NamingConvention import NamingConventionBase
+from dcmstudyclean.StudyImage import StudyImage
 import logging
 import traceback
 import os

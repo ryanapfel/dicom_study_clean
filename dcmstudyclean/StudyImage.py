@@ -1,4 +1,4 @@
-from src.NamingConvention import NamingConventionBase
+from dcmstudyclean.NamingConvention import NamingConventionBase
 from pydicom import dcmread
 import pandas as pd
 from datetime import datetime as dtt

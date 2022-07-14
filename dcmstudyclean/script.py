@@ -1,24 +1,18 @@
-from email.policy import default
 import pandas as pd
 from datetime import datetime
 import os
 import click
 import logging
 
-from src.StudyPipeline import StudyPipeline
-from src.RecordStudyInfo import RecordStudyDataPipeline
-from src.Archive import archvieDirectorySubFolders
-from src.InsertOutput import InsertOutput
+from dcmstudyclean.StudyPipeline import StudyPipeline
+from dcmstudyclean.RecordStudyInfo import RecordStudyDataPipeline
+from dcmstudyclean.Archive import archvieDirectorySubFolders
+from dcmstudyclean.InsertOutput import InsertOutput
 import warnings
 
 warnings.filterwarnings("ignore")
 LEVEL = logging.DEBUG
 logging.basicConfig(level=LEVEL)
-
-
-"""
-Returns dataframe to do work directly from hors database
-"""
 
 
 @click.group()
