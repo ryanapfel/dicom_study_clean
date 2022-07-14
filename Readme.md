@@ -1,33 +1,10 @@
 # Study Cleaner
 Use this script to clean DICOM studies using NIRC naming convention 
-```
-poetry publish --build --username $PYPI_USERNAME --password $PYPI_PASSWORD
-```
+
+
 ## Setup
-##### 1. Environment
-go to python current working directory
 ```
-conda env create --file enviroment.yml
-```
-
-[More info on conda](https://kiwidamien.github.io/save-the-environment-with-conda-and-how-to-let-others-run-your-programs.html)
-
-
-##### 2. Setup Script Alias
-Set up an alias on computer. In terminal type:
-```
-sudo nano ~/.zshrc
-```
-
-add a line with the path to the script
-```
-alias studyclean='<PATH_TO_SCRIPT>'
-```
-
-save changes
-
-```
-source ~/.zshrc
+pip install dcmstudyclean
 ```
 
 ## Usage
