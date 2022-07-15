@@ -4,6 +4,7 @@ import logging
 import traceback
 import os
 from tqdm import tqdm
+import re
 
 
 class StudyPipeline:
@@ -29,8 +30,10 @@ class StudyPipeline:
         self.studiesProccessed = 0
         self.pipelineData = []
         self.images = {}
+        self.totalFiles = sum([len(files) for r, d, files in os.walk(self.sourcepath)])
 
     def ETL(self, *args, **kwargs):
+
         for batch in self._walk_dirs(self.batch):
             try:
                 studyimages = self.extract(batch)
@@ -59,31 +62,30 @@ class StudyPipeline:
 
     def __write_files_timepoint(self, imageInstance):
         """
-        Writes dicom to a master study folder by subject id seperated by timepoin
+        Writes dicom to a master study folder by subject id seperated by timepoint
         """
         exportPath = self.exportDestination
         jointName = imageInstance.nameConvention.jointStudyId(imageInstance.studyInfo)
 
-        studyPath = os.path.join(exportPath, jointName)
-
-        if not os.path.isdir(studyPath):
-            os.mkdir(studyPath)
-            self.studiesProccessed += 1
-
         if "timepoint" in imageInstance.studyInfo:
             timepoint = imageInstance.studyInfo["timepoint"]
+
+            # make sure timepoint is safe
+            timepoint = timepoint.replace("/", "_")
             #  add in timepoint
-            studyPath = os.path.join(studyPath, timepoint)
+            studyPath = os.path.join(exportPath, jointName, timepoint)
+        else:
+            studyPath = os.path.join(exportPath, jointName)
 
-            if not os.path.isdir(studyPath):
-                os.mkdir(studyPath)
+        os.makedirs(studyPath, exist_ok=True)
+        name = f"{self.imProcessed}.dcm"
 
-        nFiles = len(os.listdir(studyPath))
-
-        name = f"{nFiles + 1}.dcm"
         studyPath = os.path.join(studyPath, name)
-
-        imageInstance.dataset.save_as(studyPath)
+        try:
+            imageInstance.dataset.save_as(studyPath)
+            self.imProcessed += 1
+        except:
+            raise ValueError(f"{studyPath} not saved. error")
 
     def _walk_dirs(self, batch_size):
         """
@@ -117,4 +119,3 @@ class StudyPipeline:
     def load(self, items: list):
         for ithImage in items:
             self.__write_files_timepoint(ithImage)
-            self.imProcessed += 1
